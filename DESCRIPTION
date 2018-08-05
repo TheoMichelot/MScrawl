@@ -1,0 +1,15 @@
+Package: MScrawl
+Type: Package
+Title: Multistate Continous-Time Correlated Random Walks
+Version: 1.0
+Date: 2018-06-07
+Author: Theo Michelot
+Maintainer: Theo Michelot <tmichelot1@sheffield.ac.uk>
+Description: Extends the R package crawl (Johnson et al., 2008) to 
+    state-switching models. Provides tools for Bayesian inference 
+    into multistate continous-time correlated random walks, for the 
+    analysis of animal movement data.
+License: GPL-3
+Imports: Rcpp (>= 0.12.16), ECctmc, gtools, MASS
+LinkingTo: Rcpp, RcppArmadillo
+RoxygenNote: 6.0.1

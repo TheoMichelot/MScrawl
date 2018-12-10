@@ -16,19 +16,25 @@
 updateQ <- function(nbStates, data, switch, priorShape, priorRate, priorCon)
 {
     # time spent in each state
-    timeInbStates <- sapply(1:nbStates, function(i) 
-        sum(diff(switch[,"time"])[which(switch[,"state"]==i)],na.rm=TRUE))
+    stateTab <- rbind(data[1,c("time","state")], # to include first interval
+                      switch, 
+                      data[nrow(data),c("time","state")]) # to include last interval
+    timeInStates <- sapply(1:nbStates, function(i) 
+        sum(diff(stateTab[,"time"])[which(stateTab[,"state"]==i)],na.rm=TRUE))
+    
+    # count intervals spent in each state
+    countIntervals <- table(rle(data[,"state"])$values)
     
     # sample rates out of each state
-    shape <- priorShape + table(switch[,"state"])
-    rate <- priorRate + timeInbStates
-    r <- rgamma(nbStates,shape,rate)
+    shape <- priorShape + countIntervals
+    rate <- priorRate + timeInStates
+    r <- rgamma(n = nbStates, shape = shape, rate = rate)
     
     # sample transition probabilities
-    allCounts <- table(data[-nrow(data),"state"],data[-1,"state"])
-    nonDiagCounts <- matrix(t(allCounts)[!diag(nbStates)],nrow=nbStates,byrow=TRUE)
+    allCounts <- table(data[-nrow(data),"state"], data[-1,"state"])
+    nonDiagCounts <- matrix(t(allCounts)[!diag(nbStates)], nrow=nbStates, byrow=TRUE)
     trProbs <- t(apply(nonDiagCounts, 1, function(x)
-        rdirichlet(n=1, alpha=x+priorCon)))
+        rdirichlet(n = 1, alpha = x + priorCon)))
     
     # update generator matrix from rates and transition probs
     Q <- -diag(nbStates)

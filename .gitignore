@@ -3,6 +3,7 @@
 .RData
 .Ruserdata
 *.Rproj
+.Rbuildignore
 src/*.o
 src/*.so
 src/*.dll
